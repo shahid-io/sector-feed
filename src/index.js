@@ -64,6 +64,38 @@ app.get('/newsfeed/:id', async (req, res) => {
     }
 });
 
+const ITEMS_PER_PAGE = 1;
+
+app.get('/newsfeed', async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const size = parseInt(req.query.size) || 10; 
+        const skip = (page - 1) * size;
+
+        const totalCount = await NewsFeed.countDocuments();
+        const totalPages = Math.ceil(totalCount / size);
+
+        const newsFeed = await NewsFeed.find()
+            .populate('author')
+            .skip(skip)
+            .limit(size);
+
+        res.status(200).json({
+            status: 'OK',
+            message: 'News feeds fetched successfully',
+            data: newsFeed,
+            pagination: {
+                currentPage: page,
+                totalPages: totalPages,
+                totalCount: totalCount,
+            },
+        });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ error: 'Error fetching news feed' });
+    }
+});
+
 app.get('/newsfeed', async (req, res) => {
     try {
         const newsFeed = await NewsFeed.find().populate('author');
@@ -73,6 +105,8 @@ app.get('/newsfeed', async (req, res) => {
         res.status(500).json({ error: 'Error fetching news feed' });
     }
 });
+
+
 
 
 const PORT = 3000;
