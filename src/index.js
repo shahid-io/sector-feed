@@ -30,10 +30,38 @@ app.post('/author', async (req, res) => {
     }
 });
 
+
+/**
+ * HELPER Fn
+ */
+
+const getPagination = (req) => {
+    const page = parseInt(req.query.page) || 1;
+    const size = parseInt(req.query.size) || 10;
+    const skip = (page - 1) * size;
+    return { page, size, skip }
+}
+
 app.get('/author', async (req, res) => {
     try {
-        const data = await Author.find();
-        res.status(200).json({ status: 'OK', message: "author fetched sucess", data: data })
+        const { page, size, skip } = getPagination(req);
+        const totalCount = await Author.countDocuments();
+        const totalPages = Math.ceil(totalCount / size);
+
+        const data = await Author.find()
+            .skip(skip)
+            .limit(size)
+            .exec();
+        res.status(200).json({
+            status: 'OK',
+            message: "author fetched sucess",
+            data: data,
+            pagination: {
+                currentPage: page,
+                totalPages: totalPages,
+                totalCount: totalCount,
+            },
+        })
     } catch (error) {
         console.log(error.message)
         res.status(500).json({ error: 'Error author' });
@@ -64,14 +92,12 @@ app.get('/newsfeed/:id', async (req, res) => {
     }
 });
 
-const ITEMS_PER_PAGE = 1;
-
 app.get('/newsfeed', async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1;
-        const size = parseInt(req.query.size) || 10; 
-        const skip = (page - 1) * size;
-
+        // const page = parseInt(req.query.page) || 1;
+        // const size = parseInt(req.query.size) || 10;
+        // const skip = (page - 1) * size;
+        const { page, size, skip } = getPagination(req);
         const totalCount = await NewsFeed.countDocuments();
         const totalPages = Math.ceil(totalCount / size);
 
