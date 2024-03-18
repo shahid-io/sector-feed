@@ -1,5 +1,10 @@
 const mongoose = require('mongoose');
 
+const metaInfo = new mongoose.Schema({
+    slug: String,
+    topic: String
+});
+
 const newsFeedSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -14,6 +19,7 @@ const newsFeedSchema = new mongoose.Schema({
         ref: 'Author',
         required: true,
     },
+    metaData: metaInfo,
     created_at: {
         type: Date,
         default: Date.now,
