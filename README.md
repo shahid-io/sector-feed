@@ -88,39 +88,47 @@ Request Body:
 json
 Copy code
 
-```{
+```
+{
   "title": "News Feed Title",
   "content": "News Feed Content",
   "author": "authorId"
-}```
+}
+```
 Response:
 json
 Copy code
-```{
+```
+{
   "status": "OK",
   "message": "News feed created successfully",
   "data": { "newsFeedObject" }
-}```
+}
+```
 Get News Feed by ID
 Endpoint: GET /newsfeed/:id
 Response:
 json
 Copy code
-```{
+```
+{
   "status": "OK",
   "message": "News feed fetched successfully",
   "data": { "newsFeedObject" }
-}```
+}
+```
 Get All News Feeds
 Endpoint: GET /newsfeed
 Response:
 json
 Copy code
-```{
+`
+{
   "status": "OK",
   "message": "News feeds fetched successfully",
   "data": [{ "newsFeedObject1" }, { "newsFeedObject2" }, ...]
-}```
+}
+`
 Populate Method
 The populate method is used to replace specified paths in a document with document(s) from other collection(s). In this application, populate('author') is used to populate the author field in the news feed with the corresponding author document.
 
